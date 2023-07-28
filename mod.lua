@@ -10,19 +10,19 @@ function enemy_throws_grenade(thrower_unit,throw_from,direction)
 	if not thrower_unit:brain()._logic_data.attention_obj then return end--anti crash code
 	local player_pos = thrower_unit:brain()._logic_data.attention_obj.m_pos
 
-	if player_pos.z > throw_from.z then
+	if player_pos.z > throw_from.z then --throw_from is enemy head pos,and playerpos is feet pos.If player feet pos higher then enemy's head pos,let the enemy aim a bit higher.
 		if enemy_throwable == "molotov" then
-			local temp1 = (player_pos.z-throw_from.z)/4.66
+			local temp1 = (player_pos.z-throw_from.z)/4.66--dont ask me how i get those magic number,by funny testing.
 			mvector3.set_z(player_pos,player_pos.z+temp)
 		elseif enemy_throwable == "poison_gas_grenade" then
 			local temp2 = (player_pos.z-throw_from.z)/3.6
 			mvector3.set_z(player_pos,player_pos.z+temp)
 		end
-	elseif math.random() > 0.5 then --randomly throw a bit further then we need.
+	elseif math.random() > 0.5 then --randomly throw a bit further then we need.Ideally should fall behind the player.
 		mvector3.set_z(player_pos,player_pos.z+math.random()*50+10)
 	if	
 	end
-
+	--//**\\--
 	mvec3_lerp(throw_dir, throw_from, player_pos, 0.3)
 	mvec3_sub(throw_dir, throw_from)
 	local throw_dis = thrower_unit:brain()._logic_data.attention_obj.verified_dis
@@ -30,6 +30,7 @@ function enemy_throws_grenade(thrower_unit,throw_from,direction)
 	local compensation = math.lerp(0, 300, dis_lerp)
 	mvector3.set_z(throw_dir, throw_dir.z + compensation)
 	mvec3_norm(throw_dir)
+	--those are vanilla logic,but its good enough.
 
     ProjectileBase.throw_projectile_npc(enemy_throwable, throw_from, throw_dir, thrower_unit)
 end
